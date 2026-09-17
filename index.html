@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mitteleuropäische Stämme & Völkerkompass</title>
+<style>
+  :root {
+    --bg-main: #f4f6f3;
+    --card-bg: #ffffff;
+    --olive-dark: #3b4832;
+    --olive-primary: #556b2f;
+    --olive-medium: #6b8e23;
+    --olive-light: #e8eee4;
+    --olive-border: #c2d1bd;
+    --text-dark: #222b1e;
+    --text-muted: #5a6654;
+    
+    --badge-germane: #2b5b84;
+    --badge-slawe: #2e7d32;
+    --badge-kelte: #8e24aa;
+    --badge-mischung: #6b8e23;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    line-height: 1.4;
+    padding: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 12px 10px;
+    background-color: var(--olive-dark);
+    color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  header h1 { 
+    font-size: 1.25rem; 
+    font-weight: 600; 
+    margin-bottom: 2px; 
+    line-height: 1.2;
+  }
+
+  .version-tag {
+    font-size: 0.72rem;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  .quote-intro { 
+    font-size: 0.75rem; 
+    font-style: italic; 
+    opacity: 0.9; 
+    line-height: 1.25;
+    color: #e2ebd9;
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  main { flex: 1; display: flex; flex-direction: column; }
+
+  /* Navigation Bar */
+  .nav-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    padding: 8px 10px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--olive-border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--olive-dark);
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .nav-btn.active, .nav-btn:hover {
+    background-color: var(--olive-primary);
+    color: #ffffff;
+    border-color: var(--olive-primary);
+  }
+
+  /* Views */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Dashboard */
+  .dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .dash-card {
+    background: var(--card-bg);
+    border: 1px solid var(--olive-border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .dash-card:active { transform: scale(0.98); }
+
+  .dash-card-content {
+    flex: 1;
+    padding-right: 10px;
+  }
+
+  .dash-card h3 {
+    font-size: 0.98rem;
+    color: var(--olive-dark);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dash-card p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .dash-action-btn {
+    padding: 8px 14px;
+    background-color: var(--olive-light);
+    color: var(--olive-dark);
+    border: 1px solid var(--olive-border);
+    border-radius: 18px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Filter-Bar */
+  .filter-bar {
+    background: var(--card-bg);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--olive-border);
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-bar input, .filter-bar select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--olive-border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+  }
+
+  .quick-filters {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .quick-btn {
+    padding: 4px 8px;
+    background-color: var(--olive-light);
+    border: 1px solid var(--olive-border);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--olive-dark);
+    cursor: pointer;
+  }
+
+  /* Cards Grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .info-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--olive-border);
+    padding: 14px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 1.02rem;
+    color: var(--olive-dark);
+    font-weight: 700;
+  }
+
+  .badge {
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .badge-germane { background-color: var(--badge-germane); }
+  .badge-slawe { background-color: var(--badge-slawe); }
+  .badge-kelte { background-color: var(--badge-kelte); }
+  .badge-mischung { background-color: var(--badge-mischung); }
+
+  .card-desc {
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+  }
+
+  .card-meta {
+    background-color: var(--bg-main);
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border: 1px solid var(--olive-border);
+  }
+
+  /* =========================================================
+     VOLLBILD-LERNKARTEN & SPOTIFY-PLAYER (ZEITSTRAHL)
+     ========================================================= */
+  #history.view.active {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 160px);
+  }
+
+  .timeline-player-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 12px;
+  }
+
+  .full-screen-card {
+    background: var(--card-bg);
+    border: 2px solid var(--olive-border);
+    border-radius: 16px;
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    user-select: none;
+    transition: transform 0.1s ease;
+  }
+
+  .full-screen-card:active {
+    transform: scale(0.99);
+  }
+
+  .card-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--olive-light);
+    padding-bottom: 8px;
+  }
+
+  .epoch-badge {
+    background: var(--olive-light);
+    color: var(--olive-dark);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .click-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .card-content h2 {
+    font-size: 1.2rem;
+    color: var(--olive-dark);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .card-content ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .card-content li {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    line-height: 1.45;
+    position: relative;
+    padding-left: 18px;
+  }
+
+  .card-content li::before {
+    content: "•";
+    color: var(--olive-primary);
+    font-size: 1.2rem;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: -2px;
+  }
+
+  /* Spotify Style Player Bar */
+  .spotify-player {
+    background: var(--olive-dark);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #e2ebd9;
+    font-weight: 600;
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 10%;
+    background: var(--olive-medium);
+    transition: width 0.3s ease;
+  }
+
+  .player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .ctrl-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+
+  .ctrl-btn:hover { background: rgba(255,255,255,0.15); }
+
+  .ctrl-btn-main {
+    background: #ffffff;
+    color: var(--olive-dark);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: bold;
+  }
+
+  .ctrl-btn-main:hover {
+    background: var(--olive-light);
+  }
+
+  /* Kettenmodal */
+  .chain-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .chain-node {
+    background-color: var(--bg-main);
+    border: 1px solid var(--olive-border);
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--olive-dark);
+    width: 100%;
+    text-align: left;
+  }
+
+  .chain-node strong {
+    color: var(--olive-primary);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .chain-arrow {
+    color: var(--olive-medium);
+    font-weight: bold;
+    font-size: 0.78rem;
+  }
+
+  /* Footer & Modals */
+  footer {
+    margin-top: 25px;
+    padding: 12px 0 0 0;
+    border-top: 1px solid var(--olive-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .footer-link {
+    color: var(--olive-dark);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal-content {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 550px;
+    width: 92%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 1px solid var(--olive-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+
+  .modal-content h3 { color: var(--olive-dark); margin-bottom: 10px; font-size: 1.05rem; }
+  .modal-content h4 { color: var(--olive-dark); margin: 10px 0 4px 0; font-size: 0.9rem; }
+  .modal-content p { font-size: 0.82rem; color: var(--text-dark); margin-bottom: 8px; line-height: 1.4; }
+  .modal-close {
+    margin-top: 12px;
+    padding: 6px 12px;
+    background: var(--olive-primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mitteleuropäische Stämme</h1>
+  <div class="version-tag">Version 2.9.7</div>
+  <p class="quote-intro">„Mitteleuropa ist ein historisches Mosaik aus Völkern, Landschaften, Wanderungen und kulturellen Vermischungen im Wandel der Zeiten.“</p>
+</header>
+
+<div class="nav-bar">
+  <button class="nav-btn active" onclick="switchView('home', this)">🏠 Start</button>
+  <button class="nav-btn" onclick="switchView('all', this)">🔍 Explorer</button>
+  <button class="nav-btn" onclick="switchView('history', this)">📜 Verlauf</button>
+</div>
+
+<main>
+  <!-- VIEW 1: DASHBOARD -->
+  <div id="home" class="view active">
+    <div class="dashboard-grid">
+      
+      <div class="dash-card" onclick="switchView('all')">
+        <div class="dash-card-content">
+          <h3>🔍 Völker & Stämme entdecken</h3>
+          <p>Durchsuche 30 bedeutende mitteleuropäische Stammesgruppen und Regionen.</p>
+        </div>
+        <span class="dash-action-btn">Öffnen</span>
+      </div>
+
+      <div class="dash-card" onclick="switchView('history')">
+        <div class="dash-card-content">
+          <h3>📜 Historischer Zeitstrahl</h3>
+          <p>Interaktive Vollbild-Lernkarten & Vorlesefunktion (10 Epochen).</p>
+        </div>
+        <span class="dash-action-btn">Ansehen</span>
+      </div>
+
+      <div class="dash-card" onclick="openModal('landscapeModal')">
+        <div class="dash-card-content">
+          <h3>🗺️ Epochen & Landschaften</h3>
+          <p>Die stufenweise Entwicklung der mitteleuropäischen Kulturräume im Überblick.</p>
+        </div>
+        <span class="dash-action-btn">Anzeigen</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW 2: EXPLORER -->
+  <div id="all" class="view">
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Stamm, Region oder Epoche suchen..." oninput="filterData()">
+      <select id="categoryFilter" onchange="filterData()">
+        <option value="all">Alle Volksgruppen</option>
+        <option value="germane">Germanen</option>
+        <option value="slawe">Slawen / Wenden</option>
+        <option value="kelte">Kelten</option>
+        <option value="mischung">Spätere Regionalbevölkerungen</option>
+      </select>
+      <div class="quick-filters">
+        <button class="quick-btn" onclick="quickSearch('Burgunder')">Burgunder</button>
+        <button class="quick-btn" onclick="quickSearch('Pomoranen')">Pomoranen</button>
+        <button class="quick-btn" onclick="quickSearch('Sachsen')">Sachsen</button>
+        <button class="quick-btn" onclick="quickSearch('Thüringer')">Thüringer</button>
+        <button class="quick-btn" onclick="quickSearch('Zirzipanen')">Zirzipanen</button>
+        <button class="quick-btn" onclick="quickSearch('')">Alle</button>
+      </div>
+    </div>
+    <div class="cards-grid" id="allCardsContainer"></div>
+  </div>
+
+  <!-- VIEW 3: HISTORIE (VOLLBILD-LERNKARTEN & SPOTIFY PLAYER) -->
+  <div id="history" class="view">
+    <div class="timeline-player-container">
+      
+      <!-- Vollbildschirm-Lernkarte (Klick führt zur nächsten Karte) -->
+      <div class="full-screen-card" onclick="nextCard()">
+        <div class="card-top-bar">
+          <span class="epoch-badge" id="epochBadge">Epoche 1 von 10</span>
+          <span class="click-hint">Tippen für nächste Karte ➔</span>
+        </div>
+        <div class="card-content" id="cardContent">
+          <!-- Inhalt wird dynamisch gerendert -->
+        </div>
+      </div>
+
+      <!-- Spotify-Style Audio & Control Player -->
+      <div class="spotify-player">
+        <div class="progress-info">
+          <span id="playerEpocheTitle">1. Germanische Stämme & Römerzeit</span>
+          <span id="playerPercent">10%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="player-controls">
+          <button class="ctrl-btn" onclick="prevCard()" title="Vorherige Karte">⏮</button>
+          <button class="ctrl-btn ctrl-btn-main" id="playBtn" onclick="toggleSpeech()" title="Vorlesen / Pause">🔊 Vorlesen</button>
+          <button class="ctrl-btn" onclick="stopSpeech()" title="Stopp">⏹</button>
+          <button class="ctrl-btn" onclick="nextCard()" title="Nächste Karte">⏭</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>
+    <span class="footer-link" onclick="openModal('impressumModal')">Impressum</span>
+  </div>
+  <div>
+    © 2026
+  </div>
+  <div>
+    <span class="footer-link" onclick="openModal('datenschutzModal')">Datenschutz</span>
+  </div>
+</footer>
+
+<!-- MODAL LANDSCHAFTEN -->
+<div id="landscapeModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Historische Landschaften & Epochen</h3>
+    <div class="chain-container">
+      <div class="chain-node">
+        <strong>1. Germanische Stammesgebiete</strong>
+        Cherusker, Markomannen, Sueben & Römisches Limesgebiet
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>2. Völkerwanderung & Frankenreich</strong>
+        Burgunder-Südwestzug, Goten, Merowinger & Karolingisches Großreich
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>3. Ottonische Reichskultur</strong>
+        Machtzentrum Magdeburg, Lechfeld & Erzbistum
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>4. Elbslawische & Askanische Räume</strong>
+        Pomoranen, Zirzipanen, Ostsiedlung & Gründung Mark Brandenburg (1157)
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>5. Verwüstung & Territorialstaat</strong>
+        30-jähriger Krieg & Erbvergleich von Kleve (1666)
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>6. Preußischer Kultur- & Machtraum</strong>
+        Hohenzollern-Königtum (1701) & Preußisch-Österreichischer Dualismus
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>7. Deutsches Kaiserreich</strong>
+        Reichsgründung 1871 in Versailles & Industrialisierung
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>8. Weimarer Republik</strong>
+        Demokratischer Aufbruch & Krisenjahre
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>9. Diktatur & Zweiter Weltkrieg</strong>
+        NS-Unrechtsstaat & Zerstörung Europas
+      </div>
+      <div class="chain-arrow">↕</div>
+      <div class="chain-node">
+        <strong>10. Geteiltes & Geeintes Deutschland</strong>
+        BRD/DDR, Mauerfall 1989 & Wiedervereinigung 1990
+      </div>
+    </div>
+    <button class="modal-close" onclick="closeModal('landscapeModal')">Schließen</button>
+  </div>
+</div>
+
+<!-- MODAL IMPRESSUM -->
+<div id="impressumModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Impressum</h3>
+    <p><strong>Angaben gemäß § 5 DDG:</strong></p>
+    <p>Katharina Schütz<br>Potsdam, Deutschland</p>
+    
+    <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong><br>Katharina Schütz<br>Potsdam</p>
+    
+    <h4>Worum handelt es sich bei dieser Anwendung?</h4>
+    <p>Bei dieser Anwendung handelt es sich um ein privates, nicht-kommerzielles Bildungsprojekt (Lern-App) zur Veranschaulichung historischer Stammesverbände und Völkerbewegungen Mitteleuropas.</p>
+    
+    <h4>Hinweis zur Erstellung mittels Künstlicher Intelligenz (KI)</h4>
+    <p>Diese Lern-App und die darin enthaltenen strukturierte Inhalte wurden unter Einsatz von Werkzeugen Künstlicher Intelligenz (KI) erstellt und redaktionell aufbereitet. Trotz sorgfältiger Zusammenstellung wird keine Gewähr für die absolute Vollständigkeit oder Fehlerfreiheit der historischen Angaben übernommen. Künstliche Intelligenz kann Fehler machen.</p>
+
+    <h4>Urheberrecht & Nutzungseinschränkung</h4>
+    <p>Die durch die Erstellerin erzeugten Inhalte, Strukturen, Texte und Designs auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung der Erstellerin. Diese Anwendung ist ausschließlich für den persönlichen Gebrauch bestimmt und darf nicht ohne vorherige Genehmigung weitergegeben, kopiert oder kommerziell weiterverwertet werden.</p>
+
+    <button class="modal-close" onclick="closeModal('impressumModal')">Schließen</button>
+  </div>
+</div>
+
+<!-- MODAL DATENSCHUTZ -->
+<div id="datenschutzModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Datenschutzerklärung</h3>
+    <p>Der Schutz Ihrer persönlichen Daten ist uns ein wichtiges Anliegen. Diese Anwendung wurde nach dem Prinzip der Datenvermeidung und Datensparsamkeit entwickelt.</p>
+
+    <h4>1. Grundsatz & Datenerfassung</h4>
+    <p>Diese Anwendung läuft als rein clientseitiges Dokument vollständig lokal in Ihrem Webbrowser. Es werden zu keinem Zeitpunkt personenbezogene Daten erfasst, verarbeitet oder an externe Server übertragen.</p>
+
+    <h4>2. Keine Cookies & kein Tracking</h4>
+    <p>Diese Website verwendet keinerlei Cookies, Web-Beacons, Zählpixel oder vergleichbare Wiedererkennungstechnologien. Es finden keinerlei Analysen Ihres Nutzungsverhaltens statt.</p>
+
+    <h4>3. Keine Server-Logfiles & Drittanbieter-Einbindungen</h4>
+    <p>Es werden keine externen Schriftarten, Skripte oder Bibliotheken von Fremdanbietern nachgeladen. IP-Adressen werden nicht gespeichert.</p>
+
+    <h4>4. Ihre Rechte</h4>
+    <p>Da von uns keinerlei personenbezogene Daten verarbeitet oder gespeichert werden, entstehen bezüglich dieser Anwendung keine zu speichernden oder zu löschenden Datensätze im Sinne der DSGVO.</p>
+
+    <button class="modal-close" onclick="closeModal('datenschutzModal')">Schließen</button>
+  </div>
+</div>
+
+<script>
+// Völkerliste
+const rawData = [
+  { name: "Alamannen (Alemannen / Einzahl: Alamanne)", category: "germane", period: "ab 3. Jahrhundert", region: "Baden-Württemberg, Schweiz, Elsass", type: "Südwestdeutscher Großstamm", description: "Bündnis suebischer Gruppen, die das römische Dekumatland besiedelten und die oberdeutschen Dialekte prägen." },
+  { name: "Bajuwaren (Baiern / Einzahl: Bajuware)", category: "germane", period: "ab 6. Jahrhundert", region: "Altbayern, Österreich, Südtirol", type: "Süddeutscher Großstamm", description: "Entstanden nach der Völkerwanderung aus einer Verschmelzung verbliebener Kelto-Romanen und germanischer Gruppen." },
+  { name: "Bataver (Einzahl: Bataver)", category: "germane", period: "1. Jh. v. Chr. – 3. Jh. n. Chr.", region: "Rheindelta (Niederlande)", type: "Westgermanischer Stamm", description: "Siedelten im Rheindelta. Bekannt als geschätzte Hilfstruppen und Reiter im Römischen Reich." },
+  { name: "Boier (Einzahl: Boier)", category: "kelte", period: "bis 1. Jh. v. Chr.", region: "Böhmen, Bayern, Österreich", type: "Keltischer Großstamm", description: "Einflussreicher keltischer Stamm Mitteleuropas. Der Name 'Böhmen' geht direkt auf dieses Volk zurück." },
+  { name: "Burgunder (Burgundio / Einzahl: Burgunder)", category: "germane", period: "bis 5. Jh. n. Chr.", region: "Oderraum, Hinterpommern, später Rheinland & Burgund", type: "Ostgermanischer Stamm", description: "Siedelten ursprünglich zwischen Oder und Weichsel, zogen an den Rhein und gründeten das Königreich Burgund." },
+  { name: "Chatten (Einzahl: Chatte)", category: "germane", period: "1. – 5. Jahrhundert", region: "Hessen, Südniedersachsen", type: "Westgermanischer Stamm", description: "Kriegerischer Stamm im hessischen Bergland. Aus ihrem Namen entwickelte sich im Laufe der Zeit 'Hessen'." },
+  { name: "Cherusker (Einzahl: Cherusker)", category: "germane", period: "1. Jh. v. Chr. – 1. Jh. n. Chr.", region: "Weser- & Leinebergland, Harz, Ostwestfalen", type: "Westgermanischer Stamm", description: "Berühmter Stammesverband unter Arminius, der 9 n. Chr. in der Varusschlacht drei römische Legionen schlug." },
+  { name: "Franken (Einzahl: Franke)", category: "germane", period: "ab 3. Jahrhundert", region: "Rheinland, Hessen, Frankreich, Franken", type: "Westgermanischer Großstamm", description: "Zusammenschluss rheingermanischer Stämme. Begründeten das prägendste Großreich des europäischen Frühmittelalters." },
+  { name: "Friesen (Einzahl: Friese)", category: "germane", period: "ab 1. Jh. v. Chr. (bis heute)", region: "Nordseeküste (Niederlande, Ost- & Nordfriesland)", type: "Nordseegermanischer Stamm", description: "Küstenvolk an der Nordsee, das über Jahrtausende Kultur und Sprache (Friesisch) in den Marschgebieten behauptete." },
+  { name: "Gepiden (Einzahl: Gepide)", category: "germane", period: "3. – 6. Jahrhundert", region: "Weichselmündung, später Karpatenbecken", type: "Ostgermanischer Stamm", description: "Eng mit den Goten verwandter Stamm, der nach der Hunnentatze ein bedeutendes Reich an der Donau errichtete." },
+  { name: "Helvetier (Einzahl: Helvetier)", category: "kelte", period: "bis 1. Jh. v. Chr.", region: "Schweizer Mittelland", type: "Keltischer Stammesverband", description: "Bedeutender keltischer Verband im Gebiet der heutigen Schweiz. Namensgeber für die spätere Confoederatio Helvetica." },
+  { name: "Hermunduren (Einzahl: Hermundure)", category: "germane", period: "1. Jh. v. Chr. – 3. Jh. n. Chr.", region: "Thüringen, Elbraum", type: "Elbgermanischer Stamm", description: "Römerfreundlicher Stamm an der oberen Elbe. Gilt als einer der Hauptbestandteile des späteren Thüringer-Stammes." },
+  { name: "Heruler (Einzahl: Heruler)", category: "germane", period: "3. – 6. Jahrhundert", region: "Ostseeraum, später Donauraum", type: "Ostgermanischer Stamm", description: "Weit gewanderter Stamm, der als hochmobile Söldner im gesamten Römischen Reich und im Donauraum agierte." },
+  { name: "Heveller (Stoderanen / Einzahl: Heveller)", category: "slawe", period: "7. – 12. Jahrhundert", region: "Havelland, Brandenburg, Potsdam", type: "Elbslawischer Stamm", description: "Siedelten entlang von Havel und Nuthe. Ihre Hauptburg war die Brennaburg (Brandenburg an der Havel)." },
+  { name: "Langobarden (Einzahl: Langobarde)", category: "germane", period: "1. – 6. Jahrhundert", region: "Unterelbe, später Pannonien & Norditalien", type: "Elbgermanischer Stamm", description: "Zogen von der Unterelbe über den Donauraum nach Italien, wo sie 568 das Langobardenreich gründeten." },
+  { name: "Markomannen (Einzahl: Markomanne)", category: "germane", period: "1. Jh. v. Chr. – 4. Jh. n. Chr.", region: "Böhmen, Mainfranken", type: "Elbgermanischer Stamm", description: "Mächtiger Stamm unter König Marbod in Böhmen. Bekannt für die schweren Markomannenkriege gegen Rom." },
+  { name: "Märker (Brandenburger / Einzahl: Märker)", category: "mischung", period: "ab 12. Jahrhundert", region: "Mark Brandenburg", type: "Historische Regionalbevölkerung (Mischkultur)", description: "Spätmittelalterliche Regionalbevölkerung der Mark Brandenburg, entstanden aus der Verschmelzung slawischer Altstämme und deutscher Siedler." },
+  { name: "Mecklenburger & Pommern (Einzahl: Mecklenburger / Pommer)", category: "mischung", period: "ab 12. Jahrhundert", region: "Mecklenburg, Vor- und Hinterpommern", type: "Historische Regionalbevölkerung (Mischkultur)", description: "Historische Kultur- und Regionalbevölkerung der Ostseeküste, geformt aus slawischen Verbänden (Obotriten, Pomoranen) und niederdeutschen Siedlern." },
+  { name: "Obotriten (Abodriten / Einzahl: Obotrit)", category: "slawe", period: "6. – 12. Jahrhundert", region: "Mecklenburg, Ostholstein", type: "Elbslawischer Stammesverband", description: "Mächtiger Verband slawischer Stämme an der Ostsee. Aus ihnen ging das herzogliche Haus Mecklenburg hervor." },
+  { name: "Polaben (Einzahl: Polabe)", category: "slawe", period: "7. – 12. Jahrhundert", region: "Lauenburg, Wendland, Elbegebiet", type: "Elbslawischer Stamm", description: "Siedelten direkt 'an der Elbe' (po labe). Ihre Sprache (Polabisch) hielt sich im Hannoverschen Wendland bis ins 18. Jh." },
+  { name: "Pomoranen (Einzahl: Pomorane)", category: "slawe", period: "6. – 12. Jahrhundert", region: "Pommern, Küstenraum östlich der Oder", type: "Westslawische Volksgruppe", description: "Slawische Stämme im Küstengebiet der Ostsee ('po more' = am Meer). Aus ihnen ging das spätere Herzogtum Pommern hervor." },
+  { name: "Raeter (Räter / Einzahl: Raeter)", category: "kelte", period: "bis 1. Jh. n. Chr.", region: "Zentralalpen, Tirol, Graubünden", type: "Alpine Volksgruppe", description: "Antike Alpenbevölkerung mit keltischen und etruskischen Einflüssen, die von den Römern unterworfen wurde." },
+  { name: "Rugier (Ruganer / Einzahl: Rugier)", category: "germane", period: "1. Jh. v. Chr. – 5. Jh. n. Chr.", region: "Ostseeküste, Pommern, Insel Rügen", type: "Ostgermanischer Stamm", description: "Ursprünglich an der Ostseeküste ansässig (Namensgeber Rügens). Zogen während der Völkerwanderung an die Donau." },
+  { name: "Sachsen (Altsachsen / Einzahl: Sachse)", category: "germane", period: "ab 3. Jahrhundert", region: "Niedersachsen, Westfalen, Holstein", type: "Nordwestgermanischer Großstamm", description: "Mächtiger antiker Großstamm im Nordwesten (Altsachsen). Teile wanderten nach Britannien aus (Angelsachsen)." },
+  { name: "Sorben (Lusizer & Milzener / Einzahl: Sorbe)", category: "slawe", period: "ab 6. Jahrhundert", region: "Lausitz (Sachsen & Süd-Brandenburg)", type: "Westslawische Minderheit", description: "Westslawischer Stamm in der Lausitz, der seine eigenständige Kultur und Sprache bis heute bewahrt hat." },
+  { name: "Sueben (Schwaben / Einzahl: Suebe)", category: "germane", period: "ab 1. Jh. v. Chr.", region: "Elbe- und Ostseeraum, später Südwestdeutschland", type: "Germanischer Großstamm", description: "Bedeutende Gruppe germanischer Stämme (Semnonen, Langobarden). Wanderten teils nach Südwestdeutschland." },
+  { name: "Thüringer (Thuringer / Einzahl: Thüringer)", category: "germane", period: "ab 3. Jahrhundert", region: "Thüringen, Harz, Sachsen-Anhalt", type: "Mitteldeutscher Großstamm", description: "Formierten sich zu einem bedeutenden Königreich in Mitteleuropa, das im 6. Jahrhundert im Frankenreich aufging." },
+  { name: "Vandalen (Einzahl: Vandale)", category: "germane", period: "bis 5. Jh. n. Chr.", region: "Schlesien, südlicher Ostseeraum, später Nordafrika", type: "Ostgermanischer Stamm", description: "Stammesverband, der im 5. Jahrhundert über Gallien nach Nordafrika zog und dort ein Reich gründete." },
+  { name: "Vindeliker (Einzahl: Vindeliker)", category: "kelte", period: "bis 1. Jh. v. Chr.", region: "Alpenvorland zwischen Bodensee und Inn", type: "Keltischer Stamm", description: "Keltisches Volk im nördlichen Alpenvorland. Ihr Hauptort wurde später zum römischen Augsburg." },
+  { name: "Zirzipanen (Einzahl: Zirzipane)", category: "slawe", period: "6. – 12. Jahrhundert", region: "Mecklenburg-Vorpommern (Peenegebiet)", type: "Teilstamm der Lutizen", description: "Slawischer Stamm im Binnenland südlich der Peene ('die an der Peene Wohnenden')." }
+];
+
+const data = rawData.sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }));
+
+// Epochen-Karten Daten
+const epochCards = [
+  {
+    title: "1. Germanische Stämme & Römerzeit (bis 4. Jh.)",
+    bullets: [
+      "Herkunftsstämme: Die ursprünglichen germanischen Stammesverbände (Cherusker, Markomannen, Sueben, Chatten) im ständigen Konflikt und Austausch mit dem Römischen Reich.",
+      "Kultur & Struktur: Lokale Sippen- und Stammesstrukturen, Thing-Versammlungen, Naturreligionen und autarke Landwirtschaft ohne zentralen Staat.",
+      "Bedeutung: Erste physische und kulturelle Wurzeln der Besiedlung Mitteleuropas."
+    ]
+  },
+  {
+    title: "2. Völkerwanderung & Frankenreich (4. – 8. Jh.)",
+    bullets: [
+      "Der große Umbruch: Auslösender Hunnensturm (375 n. Chr.) führt zu gewaltigen Migrationswellen. Auflösung der weströmischen Herrschaft.",
+      "Stammesbewegungen: Die Burgunder ziehen Richtung Südwesten, während sich Großstämme wie Sachsen, Alemannen, Thüringer, Baiern und Goten neu formieren.",
+      "Das Frankenreich: Die Franken unter Merowingern und Karolingern (Karl der Große) steigen zur Ordnungsmacht auf und christianisieren die Stämme."
+    ]
+  },
+  {
+    title: "3. Ottonen & Entstehung des Reiches (10. Jh.)",
+    bullets: [
+      "Machtzentrum Magdeburg: Kaiser Otto I. wählt Magdeburg als Hauptresidenz, schlägt die Ungarn auf dem Lechfeld (955) und gründet 968 das Erzbistum Magdeburg.",
+      "Wandel der Stammesherzogtümer: Die alten fünf Stammesherzogtümer werden durch das ottonische Reichskirchensystem schrittweise entwaffnet und territorialisiert.",
+      "Bedeutung: Geburtsstunde des Heiligen Römischen Reiches und Beginn des Machttransfers nach Osten."
+    ]
+  },
+  {
+    title: "4. Ostsiedlung, Askanier & Elbslawen (12. – 14. Jh.)",
+    bullets: [
+      "Elbslawische Stämme: Im nordostdeutschen Raum leben eigenständige slawische Stammessysteme – darunter Pomoranen und Zirzipanen.",
+      "Ostsiedlung & Kulturkontakt: Zuzug und Expansion deutscher Siedler führen zur tiefen Verschmelzung slawischer Altbevölkerung mit deutschen Bauern und Adligen.",
+      "Mark Brandenburg: Albrecht der Bär (Askanier) begründet 1157 die Mark Brandenburg. Es entstehen Städte und Klöster."
+    ]
+  },
+  {
+    title: "5. Dreißigjähriger Krieg & Erbvergleich (1618 – 1666)",
+    bullets: [
+      "Glaubenskrieg & Verwüstung: Der Dreißigjährige Krieg verheert Mitteleuropa. Brandenburg und Sachsen verlieren bis zu 60 % der Bevölkerung.",
+      "Westfälischer Friede (1648): Ende der zentralen Kaiser-Autorität; Landesherren werden souverän. Das Reich wird zum Flickenteppich.",
+      "Schlüsseljahr 1666: Im Vertrag von Kleve sichert sich der Große Kurfürst Friedrich Wilhelm die rheinisch-westfälischen Gebiete."
+    ]
+  },
+  {
+    title: "6. Hohenzollern & Aufstieg Preußens (1701 – 1866)",
+    bullets: [
+      "Königskrönung 1701: Kurfürst Friedrich III. krönt sich in Königsberg zum König Friedrich I. in Preußen.",
+      "Militär- & Verwaltungsstaat: Unter Friedrich Wilhelm I. und Friedrich II. steigt Preußen zur mitteleuropäischen Großmacht im Dualismus mit Österreich auf.",
+      "Ende des Alten Reiches: 1806 Niederlegung der Kaiserkrone, Napoleonische Kriege, Preußische Reformen und Deutscher Krieg 1866."
+    ]
+  },
+  {
+    title: "7. Deutsches Kaiserreich (1871 – 1918)",
+    bullets: [
+      "Reichsgründung 1871: Nach den Einigungskriegen wird Wilhelm I. im Spiegelsaal von Versailles zum Kaiser proklamiert. Bismarck wird Reichskanzler.",
+      "Nationalstaat & Industrialisierung: Erstmals entsteht ein geeinter deutscher Nationalstaat. Rasantes Wirtschaftswachstum und gesellschaftlicher Wandel.",
+      "Erster Weltkrieg: 1914–1918 endet das Kaiserreich in der militärischen Niederlage und der Novemberrevolution."
+    ]
+  },
+  {
+    title: "8. Weimarer Republik (1918 – 1933)",
+    bullets: [
+      "Erste Demokratie: Ausrufung der Republik, Verabschiedung einer parlamentarisch-demokratischen Verfassung in Weimar.",
+      "Belastungsproben: Versailler Vertrag, Reparationszahlungen, Hyperinflation (1923), Krawalle von links und rechts.",
+      "Blütezeit & Niedergang: Goldene Zwanziger (Kulturblüte in Berlin), gefolgt vom Weltwirtschaftsabsturz 1929 und Aufstieg des Nationalsozialismus."
+    ]
+  },
+  {
+    title: "9. Nationalsozialismus & Zweiter Weltkrieg (1933 – 1945)",
+    bullets: [
+      "Diktatur & Gleichschaltung: Machtübernahme Hitlers 1933, Zerschlagung der Demokratie, Terror, Verfolgung politischer Gegner.",
+      "Zweiter Weltkrieg & Völkermord: Entfesselung des Weltkriegs (1939–1945), der Holocaust an den europäischen Juden und Zerstörung des Kontinents.",
+      "Zusammenbruch: Bedingungslose Kapitulation 1945, Besetzung und Aufteilung Deutschlands durch die Alliierten."
+    ]
+  },
+  {
+    title: "10. Teilung & Wiedervereinigung (1949 – 1990)",
+    bullets: [
+      "Zwei deutsche Staaten: Gründung der BRD und der DDR 1949 im Kalten Krieg. Bau der Berliner Mauer 1961 als Symbol der Trennung.",
+      "Friedliche Revolution: 1989 erstreiken und erströmen die Bürger der DDR die Öffnung der Grenzen und den Fall der Mauer.",
+      "3. Oktober 1990: Wirksamwerden des Einigungsvertrages – Beitritt der DDR zur Bundesrepublik Deutschland und Vollendung der Einheit."
+    ]
+  }
+];
+
+let currentEpochIndex = 0;
+let synth = window.speechSynthesis;
+let currentUtterance = null;
+let isSpeaking = false;
+
+function renderEpochCard() {
+  const card = epochCards[currentEpochIndex];
+  
+  // Badge & Titel
+  document.getElementById('epochBadge').innerText = `Epoche ${currentEpochIndex + 1} von ${epochCards.length}`;
+  document.getElementById('playerEpocheTitle').innerText = card.title;
+
+  // Prozent-Berechnung
+  const percent = Math.round(((currentEpochIndex + 1) / epochCards.length) * 100);
+  document.getElementById('playerPercent').innerText = `${percent}%`;
+  document.getElementById('progressBarFill').style.width = `${percent}%`;
+
+  // Inhalt
+  let bulletsHTML = card.bullets.map(b => `<li>${b}</li>`).join('');
+  document.getElementById('cardContent').innerHTML = `
+    <h2>${card.title}</h2>
+    <ul>${bulletsHTML}</ul>
+  `;
+
+  // Vorlesestatus zurücksetzen falls gewechselt
+  if (isSpeaking) {
+    stopSpeech();
+  }
+}
+
+function nextCard() {
+  if (currentEpochIndex < epochCards.length - 1) {
+    currentEpochIndex++;
+  } else {
+    currentEpochIndex = 0; // Loop zum Start
+  }
+  renderEpochCard();
+}
+
+function prevCard() {
+  if (currentEpochIndex > 0) {
+    currentEpochIndex--;
+  } else {
+    currentEpochIndex = epochCards.length - 1;
+  }
+  renderEpochCard();
+}
+
+// Speech Synthesis (Vorlesefunktion)
+function toggleSpeech() {
+  if (!synth) {
+    alert("Vorlesefunktion wird von Ihrem Browser leider nicht unterstützt.");
+    return;
+  }
+
+  if (synth.speaking && !synth.paused) {
+    synth.pause();
+    document.getElementById('playBtn').innerText = "🔊 Weiter";
+    return;
+  }
+
+  if (synth.paused) {
+    synth.resume();
+    document.getElementById('playBtn').innerText = "⏸ Pause";
+    return;
+  }
+
+  // Neu starten
+  const card = epochCards[currentEpochIndex];
+  let textToRead = `${card.title}. ` + card.bullets.join(" ");
+
+  currentUtterance = new SpeechSynthesisUtterance(textToRead);
+  currentUtterance.lang = 'de-DE';
+  currentUtterance.rate = 0.95;
+
+  currentUtterance.onend = function() {
+    isSpeaking = false;
+    document.getElementById('playBtn').innerText = "🔊 Vorlesen";
+  };
+
+  synth.speak(currentUtterance);
+  isSpeaking = true;
+  document.getElementById('playBtn').innerText = "⏸ Pause";
+}
+
+function stopSpeech() {
+  if (synth) {
+    synth.cancel();
+    isSpeaking = false;
+    document.getElementById('playBtn').innerText = "🔊 Vorlesen";
+  }
+}
+
+function createCardHTML(item) {
+  let catText = "Spätere Regionalbevölkerung";
+  let badgeClass = "badge-mischung";
+
+  if (item.category === "germane") { catText = "Germane"; badgeClass = "badge-germane"; }
+  if (item.category === "slawe") { catText = "Slawe / Wende"; badgeClass = "badge-slawe"; }
+  if (item.category === "kelte") { catText = "Kelte"; badgeClass = "badge-kelte"; }
+
+  return `
+    <div class="info-card">
+      <div class="card-header">
+        <h3 class="card-title">${item.name}</h3>
+        <span class="badge ${badgeClass}">${catText}</span>
+      </div>
+      <p class="card-desc">${item.description}</p>
+      <div class="card-meta">
+        <div><strong>Typus:</strong> ${item.type}</div>
+        <div><strong>Epoche:</strong> ${item.period}</div>
+        <div><strong>Hauptraum:</strong> ${item.region}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAllCards(items) {
+  const container = document.getElementById('allCardsContainer');
+  if (items.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Keine Stämme gefunden.</p>';
+    return;
+  }
+  container.innerHTML = items.map(createCardHTML).join('');
+}
+
+function filterData() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('categoryFilter').value;
+
+  const filtered = data.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(query) ||
+                          item.description.toLowerCase().includes(query) ||
+                          item.region.toLowerCase().includes(query) ||
+                          item.type.toLowerCase().includes(query);
+    const matchesCat = cat === 'all' || item.category === cat;
+    return matchesSearch && matchesCat;
+  });
+
+  renderAllCards(filtered);
+}
+
+function quickSearch(keyword) {
+  document.getElementById('searchInput').value = keyword;
+  filterData();
+}
+
+function switchView(viewId, btn) {
+  stopSpeech();
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById(viewId).classList.add('active');
+
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const btnIndex = { home: 0, all: 1, history: 2 }[viewId];
+    if (document.querySelectorAll('.nav-btn')[btnIndex]) {
+      document.querySelectorAll('.nav-btn')[btnIndex].classList.add('active');
+    }
+  }
+
+  if (viewId === 'all') filterData();
+  if (viewId === 'history') renderEpochCard();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// Initialisierung
+renderAllCards(data);
+renderEpochCard();
+</script>
+</body>
+</html>
